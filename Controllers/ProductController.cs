@@ -12,9 +12,9 @@ namespace BlackBoxInc.Controllers
     [Route("api/[controller]")]
     public class ProductController : ControllerBase
     {
-        private readonly ProductService productService;
+        private readonly IProductServices productService;
 
-        public ProductController(ProductService productService)
+        public ProductController(IProductServices productService)
         {
             this.productService = productService ?? throw new ArgumentNullException(nameof(productService)); //Study this exception type later
         }

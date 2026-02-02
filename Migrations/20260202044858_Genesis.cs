@@ -33,7 +33,8 @@ namespace BlackBoxInc.Migrations
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     AddedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     InStock = table.Column<int>(type: "int", nullable: false),
-                    ProductDescription = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    ProductDescription = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StockCount = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlackBoxInc.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260130134201_Genesis")]
+    [Migration("20260202044858_Genesis")]
     partial class Genesis
     {
         /// <inheritdoc />
@@ -61,6 +61,9 @@ namespace BlackBoxInc.Migrations
 
                     b.Property<string>("ProductDescription")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("StockCount")
+                        .HasColumnType("int");
 
                     b.HasKey("ID");
 

@@ -59,6 +59,9 @@ namespace BlackBoxInc.Migrations
                     b.Property<string>("ProductDescription")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("StockCount")
+                        .HasColumnType("int");
+
                     b.HasKey("ID");
 
                     b.ToTable("Products");

@@ -3,6 +3,6 @@
     public enum AvailabilityStatus
     {
         Available = 0,
-        Unvailable = 1
+        Unavailable = 1
     }
 }

@@ -1,6 +1,6 @@
 @BlackBoxInc_HostAddress = http://localhost:5194
 
-GET {{BlackBoxInc_HostAddress}}/weatherforecast/
+GET {{BlackBoxIncDb_HostAddress}}/weatherforecast/
 Accept: application/json
 
 ###
