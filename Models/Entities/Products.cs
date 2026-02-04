@@ -1,10 +1,12 @@
 ﻿using BlackBoxInc.Models.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace BlackBoxInc.Models.Entities
 {
     public class Products
     {
-        public int ID { get; set; }
+        [Key]
+        public int ProductId { get; set; }
         public required string Name { get; set; }
         public required decimal Price { get; set; }
         public DateTime AddedAt { get; set; }

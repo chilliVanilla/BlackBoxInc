@@ -28,7 +28,6 @@ namespace BlackBoxInc.Services
         //AddProduct
         public Products? AddProduct(Products addProductsDto)
         {
-            var product = dbContext.Products.ToList();
             var productEntity = new Products()
             {
                 Name = addProductsDto.Name,
@@ -48,6 +47,30 @@ namespace BlackBoxInc.Services
             dbContext.Products.Add(productEntity);
             dbContext.SaveChanges();
             return productEntity;
+        }
+
+
+        public List<Products> GetByName(string name)
+        {
+            name = name.Trim().ToLower();
+            var matchingProducts = dbContext.Products.Where(p => p.Name.Trim().ToLower().Contains(name)).ToList();
+            if (matchingProducts is null)
+                return null;
+
+            return matchingProducts;
+        }
+
+        public Products RemoveProduct(int id)
+        {
+            var product = dbContext.Products.Find(id);
+            
+            if (product is null)
+            {
+                return null;
+            }
+            dbContext.Products.Remove(product);
+            dbContext.SaveChanges();
+            return product;
         }
 
 

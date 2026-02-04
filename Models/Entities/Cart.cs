@@ -2,8 +2,7 @@
 {
     public class Cart
     {
-        public int ID { get; set; }
-        public Products? Products;
-        public decimal Total;
+        public int CartId { get; set; }
+        public ICollection<CartItem> Items { get; set; } = new List<CartItem>();
     }
 }

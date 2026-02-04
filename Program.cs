@@ -26,7 +26,7 @@ builder.Services.AddControllers()
 
 
 
-
+builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IProductServices, ProductService>();
 
 

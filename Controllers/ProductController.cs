@@ -1,8 +1,9 @@
 ﻿using BlackBoxInc.Data;
 using BlackBoxInc.Models.Entities;
+using BlackBoxInc.Services;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using BlackBoxInc.Services;
 //using Microsoft.EntityFrameworkCore.Storage;
 
 namespace BlackBoxInc.Controllers
@@ -41,7 +42,7 @@ namespace BlackBoxInc.Controllers
                 return Conflict(new { message = $"Product with name {addProductsDto.Name} already exists!!" });//The proper RESTful alternative to an error 405
             }
 
-            return CreatedAtAction(nameof(GetElementById), new { id = outcome.ID }, outcome);
+            return CreatedAtAction(nameof(GetElementById), new { id = outcome.ProductId }, outcome);
         }
 
 
@@ -56,6 +57,30 @@ namespace BlackBoxInc.Controllers
                 return NotFound();//Look for the proper RESTful return statement 
             }
             return Ok(test);
+        }
+
+        [HttpGet("FindByName")]
+        public IActionResult GetProductByName(string name)
+        {
+            var matchingProducts = productService.GetByName(name);
+
+            if (matchingProducts is null)
+                return NotFound("No product with similar name");
+
+            return Ok(matchingProducts);
+
+        }
+
+        [HttpDelete]
+        [Route("{id:int}/deleteProduct")]
+        public IActionResult DeleteProduct(int id)
+        {
+            var test = productService.RemoveProduct(id);
+            if (test == null)
+            {
+                return NotFound("Item could not be deleted since it does not exist!!");
+            }
+            return Ok("Delete Successful");
         }
     }
 }
