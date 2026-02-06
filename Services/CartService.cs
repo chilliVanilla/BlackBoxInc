@@ -13,18 +13,27 @@ namespace BlackBoxInc.Services
             this.dbContext = dbContext;
         }
 
-        public List<Cart> GetAllCarts()
+        //public void RemoveDuplicates()
+        //{
+        //    var cartItems = dbContext.CartItems.ToList();
+        //}
+
+        public List<User> GetAllUserCarts()
         {
-            var allCarts = dbContext.Carts.ToList();
+            var allCarts = dbContext.Users
+                .Include(c => c.Items)
+                .ThenInclude(i => i.Product)
+                .ToList();
             return allCarts;
         }
 
         public List<CartItemResponseDto> GetCartItemsById(int id)
         {
-            var cart = dbContext.Carts
+            var cart = dbContext.Users
                 .Include(c => c.Items)
                 .ThenInclude(i => i.Product)
-                .FirstOrDefault(r => r.CartId == id);
+                .FirstOrDefault(r => r.UserId == id);
+
             if (cart is null)
             {
                 return null;
@@ -33,99 +42,108 @@ namespace BlackBoxInc.Services
             var allItems = cart.Items.Select(i => new CartItemResponseDto
             {
                 ProductId = i.ProductId,
-                Name = i.Name,
-                Price = i.Price
+                Name = dbContext.Products.Find(i.ProductId).Name,
+                Price = dbContext.Products.Find(i.ProductId).Price,
+                Quantity = i.Quantity
             }).ToList();
 
             return allItems;
 
         }
 
-        public int CreateNewCart()
+        public int CreateNewUser()
         {
-            var newCart = new Cart();
+            var newUser = new User();
 
-            dbContext.Carts.Add(newCart);
+            dbContext.Users.Add(newUser);
             dbContext.SaveChanges();
 
-            return newCart.CartId;
+            return newUser.UserId;
         }
 
-        public bool DeleteCart(int id)
+        public bool DeleteUser(int id)
         {
-            var cart = dbContext.Carts.Find(id);
-            if (cart is null)
+            var user = dbContext.Users.Find(id);
+            if (user is null)
             {
                 return false;
             }
 
-            dbContext.Carts.Remove(cart);
+            dbContext.Users.Remove(user);
             dbContext.SaveChanges();
             return true;
         }
 
         public decimal CartTotal(int id)
         {
-            var prodIds = dbContext.Carts
-                .Where(c => c.CartId == id)
-                .SelectMany(c => c.Items)
-                .Select(c => c.ProductId).ToList();
+            var total = dbContext.CartItems
+                .Where(ci => ci.UserId == id)
+                .Select(c => c.Quantity * c.Product.Price)
+                .Sum();
 
-            var prices = dbContext
-                .Products
-                .Where(p => prodIds.Contains(p.ProductId))
-                .Select(p => p.Price)
-                .ToList();
-            decimal total = prices.Sum();
+
+            //var quantities = dbContext
+            //    .CartItems.Where(u => u.UserId == id)
+            //    .Select(q => q.Quantity).ToList();
+
+            //var prices = dbContext
+            //    .Products
+            //    .Where(p => prodIds.Contains(p.ProductId))
+            //    .Select(p => p.Price)
+            //    .ToList();
+
+            //decimal total = prices.Sum();
+
             return total;
 
         }
 
-        public Cart AddProductToCart(CartDto dto)
+        public CartItem AddProductToUserCart(CartDto dto)
         {
             var item = dbContext.Products.Find(dto.ProductId);
+            //get the item details
 
-            var selectCart = dbContext.Carts
+            var selectUser = dbContext.Users
                 .Include(c => c.Items)
-                .FirstOrDefault(ca => ca.CartId == dto.CartId);
-            var exists = selectCart.Items.FirstOrDefault(i => i.ProductId == dto.ProductId);
-            if (exists != null)
-            { 
-                return null;
-            }
+                .FirstOrDefault(ca => ca.UserId == dto.UserId);
+            //Get user details id, items list
 
-            if (selectCart is null)
+            if (selectUser is null)
                 return null;
 
             if (item is null)
                 return null;
 
-            Console.WriteLine("In the Create new cart method in the cart service class");//
+            var exists = selectUser.Items.FirstOrDefault(i => i.ProductId == dto.ProductId);
+            //test to see if it already exists in cart
 
-            var product = new CartItem()
+            if (exists != null)
             {
+                exists.Quantity += dto.Quantity;
+
+            }
+            var convert = new CartItem
+            {
+                //UserId = dto.UserId,
                 ProductId = dto.ProductId,
-                Product = item,
-
-                CartId = selectCart.CartId,
-
-                Name = item.Name,
-                Price = item.Price,
-                ProductDescription = item.ProductDescription
+                Quantity = dto.Quantity
             };
-            selectCart.Items.Add(product);
+
+            selectUser.Items.Add(convert);
+            //dbContext.Users.Add(selectUser);
             dbContext.SaveChanges();
-            return selectCart;
+
+            return convert;
+            //return selectUser;///////////////////////////////////////////
 
         }
 
-
-        public Cart RemoveProductFromCart(CartDto dto)
+        public User RemoveProductFromUserCart(CartDto dto)
         {
 
-            var selectCart = dbContext.Carts
+            var selectCart = dbContext.Users
                 .Include(c => c.Items)
-                .FirstOrDefault(ca => ca.CartId == dto.CartId);
+                .FirstOrDefault(ca => ca.UserId == dto.UserId);
 
             var item = selectCart
                 .Items
@@ -136,12 +154,18 @@ namespace BlackBoxInc.Services
 
             if (item is null)
                 return null;
+            if ((item.Quantity - dto.Quantity) > 0)
+            {
+                item.Quantity = item.Quantity - dto.Quantity;
+            }
+            else
+            {
+                selectCart.Items.Remove(item);
+                dbContext.CartItems.Remove(item);
+            }
 
-            selectCart.Items.Remove(item);
-            dbContext.CartItems.Remove(item);
             dbContext.SaveChanges();
             return selectCart;
-
         }
     }
 

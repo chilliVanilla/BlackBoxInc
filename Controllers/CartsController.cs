@@ -18,11 +18,11 @@ namespace BlackBoxInc.Controllers
         }
 
         // Post: Carts
-        [HttpPost("addNewCart")]
+        [HttpPost("addNewUser")]
         //[Route("{dto:CartDto}")]
         public IActionResult AddNewCart()
         {
-            int cartId = cartService.CreateNewCart();
+            int cartId = cartService.CreateNewUser();
 
             return Ok(cartId);
         }
@@ -30,23 +30,12 @@ namespace BlackBoxInc.Controllers
         [HttpPost("addNewProductToCart")]
         public IActionResult AddItemToCart([FromBody] CartDto dto)
         {
-            var cart = cartService.AddProductToCart(dto);
+            var cart = cartService.AddProductToUserCart(dto);
             if (cart is null)
                 return NotFound("Cart or Product not found\nOr product already exists!!!!");
 
             //return Ok(cart);
-            return Ok(new CartResponseDto
-            {
-                CartId = cart.CartId,
-                Items = cart.Items.Select(i => new CartItemResponseDto
-                {
-                    CartItemId = i.CartItemId,
-                    ProductId = i.ProductId,
-                    Name = i.Name,
-                    Price = i.Price
-                }).ToList()
-            });
-
+            return Ok(cart.Product.ToString());////////////////////////////////////////////
         }
 
 
@@ -55,7 +44,7 @@ namespace BlackBoxInc.Controllers
         //[Route("AllCarts")]
         public IActionResult GetAllCarts()
         {
-            return Ok(cartService.GetAllCarts());
+            return Ok(cartService.GetAllUserCarts());
         }
 
         //GET:By Id
@@ -78,7 +67,7 @@ namespace BlackBoxInc.Controllers
         [Route("{DelId:int}")]
         public IActionResult DeleteCart(int DelId)
         {
-            var test = cartService.DeleteCart(DelId);
+            var test = cartService.DeleteUser(DelId);
             if (test == false)
             {
                 return NotFound("Cart not found");
@@ -97,7 +86,7 @@ namespace BlackBoxInc.Controllers
         [HttpDelete("DeleteCartItem")]
         public IActionResult DeleteItemCart([FromBody]CartDto dto)
         {
-            if(cartService.RemoveProductFromCart(dto) is null)
+            if(cartService.RemoveProductFromUserCart(dto) is null)
                 return NotFound("Product or cart not found");
 
             return Ok("Product deleted");

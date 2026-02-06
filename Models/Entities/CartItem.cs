@@ -5,18 +5,12 @@
         public int CartItemId { get; set; }
 
 
-
-        public int CartId { get; set; }
-        public Cart Cart { get; set; } = null!;
+        public int UserId { get; set; }
+        //public Users User { get; set; } = null!;
 
 
         public int ProductId { get; set; }
         public Products? Product { get; set; }
-
-
-        public required string Name { get; set; }
-        public required decimal Price { get; set; }
-        public string? ProductDescription { get; set; }
-
+        public int Quantity { get; set; }
     }
 }
