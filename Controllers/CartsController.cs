@@ -5,6 +5,16 @@ using BlackBoxInc.Models.Entities;
 using BlackBoxInc.Services;
 using BlackBoxInc.Models.DTOs;
 
+/// <summary>
+/// Handles all shopping cart related operations such as creating carts(users),
+/// adding products to cart, retrieving carts for both individual users and all user contents, 
+/// clearing carts, and getting the total price of items in a cart.
+/// </summary>
+/// <remarks>
+/// This controller exposes endpoints for managing users and their shopping carts.
+/// All cart operations are performed through this controller.
+/// </remarks>
+
 namespace BlackBoxInc.Controllers
 {
     public class CartsController : Controller
@@ -17,6 +27,15 @@ namespace BlackBoxInc.Controllers
             this.cartService = cartService;
         }
 
+        /// <summary>
+        /// Creates new users
+        /// </summary>
+        /// <remarks>
+        /// This endpoint initializes an empty cart and returns the generated cart ID
+        /// </remarks>
+        /// <returns>
+        /// Returns the unique identifier of the newly created cart(user)
+        /// </returns>
         // Post: Carts
         [HttpPost("addNewUser")]
         //[Route("{dto:CartDto}")]
@@ -27,6 +46,16 @@ namespace BlackBoxInc.Controllers
             return Ok(cartId);
         }
 
+
+        /// <summary>
+        /// Adds a product to an existing cart and if the product already exists in the cart, it increments it's quantity
+        /// </summary>
+        /// <param name="dto">
+        /// The dto passed contains the product ID, quantity and the target cart number
+        /// </param>
+        /// <returns>
+        /// Returns the product details of the product added
+        /// </returns>
         [HttpPost("addNewProductToCart")]
         public IActionResult AddItemToCart([FromBody] CartDto dto)
         {
@@ -35,10 +64,20 @@ namespace BlackBoxInc.Controllers
                 return NotFound("Cart or Product not found\nOr product already exists!!!!");
 
             //return Ok(cart);
-            return Ok(cart.Product.ToString());////////////////////////////////////////////
+            return Ok(new CartItemResponseDto
+            {
+                Name = cart.Product.Name,
+                Price = cart.Product.Price,
+                Quantity = cart.Quantity
+            });
         }
 
-
+        /// <summary>
+        /// Returns all user carts created
+        /// </summary>
+        /// <returns>
+        /// A list of all created carts
+        /// </returns>
         //GET: All carts
         [HttpGet("AllCarts")]
         //[Route("AllCarts")]
@@ -47,13 +86,22 @@ namespace BlackBoxInc.Controllers
             return Ok(cartService.GetAllUserCarts());
         }
 
+        /// <summary>
+        /// Returns the user's cart based on the inputed user ID
+        /// </summary>
+        /// <param name="userId">
+        /// ID of the user whose cart is to be modified
+        /// </param>
+        /// <returns>
+        /// All item  and cart details of the user
+        /// </returns>
         //GET:By Id
         [HttpGet]
-        [Route("{cartId:int}/cartById")]
-        public IActionResult GetCartById(int cartId)
+        [Route("{userId:int}/cartById")]
+        public IActionResult GetCartById(int userId)
         {
             var cartProducts = cartService.
-                GetCartItemsById(cartId);
+                GetCartItemsById(userId);
             if (cartProducts is null)
             {
                 return NotFound();
@@ -62,6 +110,15 @@ namespace BlackBoxInc.Controllers
 
         }
 
+        /// <summary>
+        /// Deletes a user based on the user ID
+        /// </summary>
+        /// <param name="DelId">
+        /// ID of the user to be deleted
+        /// </param>
+        /// <returns>
+        /// Returns status code 204 if successfully deleted and 404 if the user was not found
+        /// </returns>
         //DELETE:By Id
         [HttpDelete]
         [Route("{DelId:int}")]
@@ -70,11 +127,20 @@ namespace BlackBoxInc.Controllers
             var test = cartService.DeleteUser(DelId);
             if (test == false)
             {
-                return NotFound("Cart not found");
+                return NotFound("User not found");
             }
-            return Ok();
+            return NoContent();
         }
 
+        /// <summary>
+        /// Returns the total amount of items in a user's cart
+        /// </summary>
+        /// <param name="id">
+        /// The ID of the user whose cart is to be modified
+        /// </param>
+        /// <returns>
+        /// Returns a total based on the prices and quantities of each item in the cart.
+        /// </returns>
         [HttpGet]
         [Route("{id:int}/total")]
         public IActionResult GetTotalInCart(int id)
@@ -83,6 +149,14 @@ namespace BlackBoxInc.Controllers
             return Ok(total);
         }
 
+
+        /// <summary>
+        /// Deletes an item from a cart
+        /// </summary>
+        /// <param name="dto">
+        /// Accepts the user ID, product ID and number of products to be deleted or removed
+        /// </param>
+        /// <returns></returns>
         [HttpDelete("DeleteCartItem")]
         public IActionResult DeleteItemCart([FromBody]CartDto dto)
         {

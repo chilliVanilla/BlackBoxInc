@@ -9,5 +9,6 @@ namespace BlackBoxInc.Services
         Products? AddProduct(Products product);
         public List<Products> GetByName(string name);
         public Products RemoveProduct(int id);
+        public List<Products> GetByCategory(string category);
     }
 }

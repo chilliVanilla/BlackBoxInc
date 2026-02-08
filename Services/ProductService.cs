@@ -1,5 +1,6 @@
 ﻿using BlackBoxInc.Data;
 using BlackBoxInc.Models.Entities;
+using System.Text.RegularExpressions;
 
 namespace BlackBoxInc.Services
 {
@@ -34,10 +35,23 @@ namespace BlackBoxInc.Services
                 Price = addProductsDto.Price,
                 ProductDescription = addProductsDto.ProductDescription,
                 InStock = addProductsDto.InStock,
-                StockCount = addProductsDto.StockCount
+                StockCount = addProductsDto.StockCount,
+                Category = addProductsDto.Category
             };
 
-            var test = dbContext.Products.Any(p => p.Name == productEntity.Name);
+            //var compare = Regex.Replace(productEntity.Name.Trim(), @"\s+", "");
+            //var prod = Regex.Replace(dbContext.Products.);
+
+            var compare = Normalize(addProductsDto.Name);
+
+            var test = dbContext.Products
+                .AsEnumerable()
+                .Any(p => Normalize(p.Name) == compare);
+
+
+            //var results = dbContext.Products.AsEnumerable()
+            //    .Where(p=>Matches(p.Name, addProductsDto.Name));
+                
 
             if (test)
             {
@@ -73,6 +87,27 @@ namespace BlackBoxInc.Services
             return product;
         }
 
+
+        public List<Products> GetByCategory(string category)
+        {
+            var prodList = dbContext.Products.Where(p=>p.Category.Contains(category.Trim().ToLower())).ToList();
+
+            return prodList;
+        }
+
+        public bool Matches(string productName, string input)
+        {
+            var name = productName.ToLower().Trim();
+            var tokens = input.ToLower().Split(" ", StringSplitOptions.RemoveEmptyEntries);
+
+            return tokens.All(token => name.Contains(token));
+        }
+
+        public string Normalize(string input)
+        {
+            var end = Regex.Replace(input.Trim().ToLower(), @"\s+", "");
+            return end;
+        }
 
     }
 }

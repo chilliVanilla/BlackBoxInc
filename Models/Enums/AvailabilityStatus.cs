@@ -2,7 +2,7 @@
 {
     public enum AvailabilityStatus
     {
-        Available = 0,
-        Unavailable = 1
+        Available = 1,
+        Unavailable = 0
     }
 }

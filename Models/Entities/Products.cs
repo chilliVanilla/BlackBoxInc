@@ -8,6 +8,7 @@ namespace BlackBoxInc.Models.Entities
         [Key]
         public int ProductId { get; set; }
         public required string Name { get; set; }
+        public required string Category { get; set; }
         public required decimal Price { get; set; }
         public DateTime AddedAt { get; set; }
         public required AvailabilityStatus InStock { get; set; }

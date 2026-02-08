@@ -81,19 +81,6 @@ namespace BlackBoxInc.Services
                 .Select(c => c.Quantity * c.Product.Price)
                 .Sum();
 
-
-            //var quantities = dbContext
-            //    .CartItems.Where(u => u.UserId == id)
-            //    .Select(q => q.Quantity).ToList();
-
-            //var prices = dbContext
-            //    .Products
-            //    .Where(p => prodIds.Contains(p.ProductId))
-            //    .Select(p => p.Price)
-            //    .ToList();
-
-            //decimal total = prices.Sum();
-
             return total;
 
         }
@@ -102,6 +89,7 @@ namespace BlackBoxInc.Services
         {
             var item = dbContext.Products.Find(dto.ProductId);
             //get the item details
+            var stock = item.StockCount;
 
             var selectUser = dbContext.Users
                 .Include(c => c.Items)
@@ -122,6 +110,7 @@ namespace BlackBoxInc.Services
                 exists.Quantity += dto.Quantity;
 
             }
+            stock = stock - dto.Quantity;
             var convert = new CartItem
             {
                 //UserId = dto.UserId,
@@ -163,6 +152,9 @@ namespace BlackBoxInc.Services
                 selectCart.Items.Remove(item);
                 dbContext.CartItems.Remove(item);
             }
+
+            var stock = dbContext.Products.Find(dto.ProductId).StockCount;
+            stock = stock + dto.Quantity;
 
             dbContext.SaveChanges();
             return selectCart;
