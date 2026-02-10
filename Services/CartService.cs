@@ -18,14 +18,7 @@ namespace BlackBoxInc.Services
         //    var cartItems = dbContext.CartItems.ToList();
         //}
 
-        public List<User> GetAllUserCarts()
-        {
-            var allCarts = dbContext.Users
-                .Include(c => c.Items)
-                .ThenInclude(i => i.Product)
-                .ToList();
-            return allCarts;
-        }
+        
 
         public List<CartItemResponseDto> GetCartItemsById(int id)
         {
@@ -49,29 +42,6 @@ namespace BlackBoxInc.Services
 
             return allItems;
 
-        }
-
-        public int CreateNewUser()
-        {
-            var newUser = new User();
-
-            dbContext.Users.Add(newUser);
-            dbContext.SaveChanges();
-
-            return newUser.UserId;
-        }
-
-        public bool DeleteUser(int id)
-        {
-            var user = dbContext.Users.Find(id);
-            if (user is null)
-            {
-                return false;
-            }
-
-            dbContext.Users.Remove(user);
-            dbContext.SaveChanges();
-            return true;
         }
 
         public decimal CartTotal(int id)

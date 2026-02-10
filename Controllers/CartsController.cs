@@ -17,7 +17,7 @@ using BlackBoxInc.Models.DTOs;
 
 namespace BlackBoxInc.Controllers
 {
-    public class CartsController : Controller
+    public class CartsController : ControllerBase
     {
         //private readonly ApplicationDbContext dbContext;
         private readonly ICartService cartService;
@@ -25,25 +25,6 @@ namespace BlackBoxInc.Controllers
         public CartsController(ICartService cartService)
         {
             this.cartService = cartService;
-        }
-
-        /// <summary>
-        /// Creates new users
-        /// </summary>
-        /// <remarks>
-        /// This endpoint initializes an empty cart and returns the generated cart ID
-        /// </remarks>
-        /// <returns>
-        /// Returns the unique identifier of the newly created cart(user)
-        /// </returns>
-        // Post: Carts
-        [HttpPost("addNewUser")]
-        //[Route("{dto:CartDto}")]
-        public IActionResult AddNewCart()
-        {
-            int cartId = cartService.CreateNewUser();
-
-            return Ok(cartId);
         }
 
 
@@ -72,19 +53,6 @@ namespace BlackBoxInc.Controllers
             });
         }
 
-        /// <summary>
-        /// Returns all user carts created
-        /// </summary>
-        /// <returns>
-        /// A list of all created carts
-        /// </returns>
-        //GET: All carts
-        [HttpGet("AllCarts")]
-        //[Route("AllCarts")]
-        public IActionResult GetAllCarts()
-        {
-            return Ok(cartService.GetAllUserCarts());
-        }
 
         /// <summary>
         /// Returns the user's cart based on the inputed user ID
@@ -110,27 +78,7 @@ namespace BlackBoxInc.Controllers
 
         }
 
-        /// <summary>
-        /// Deletes a user based on the user ID
-        /// </summary>
-        /// <param name="DelId">
-        /// ID of the user to be deleted
-        /// </param>
-        /// <returns>
-        /// Returns status code 204 if successfully deleted and 404 if the user was not found
-        /// </returns>
-        //DELETE:By Id
-        [HttpDelete]
-        [Route("{DelId:int}")]
-        public IActionResult DeleteCart(int DelId)
-        {
-            var test = cartService.DeleteUser(DelId);
-            if (test == false)
-            {
-                return NotFound("User not found");
-            }
-            return NoContent();
-        }
+        
 
         /// <summary>
         /// Returns the total amount of items in a user's cart
