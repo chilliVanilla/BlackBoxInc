@@ -1,5 +1,5 @@
 ﻿using BlackBoxInc.Services;
-using Microsoft.AspNetCore.Cors.Infrastructure;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -7,7 +7,8 @@ namespace BlackBoxInc.Controllers
 {
 
 
-
+    [ApiController]
+    [Route("api/[controller]")]
     public class UserController:ControllerBase
 
     {
@@ -30,10 +31,11 @@ namespace BlackBoxInc.Controllers
         /// Returns the unique identifier of the newly created cart(user)
         /// </returns>
         // Post: Users
+        [Authorize]
         [HttpPost("addNewUser")]
         public IActionResult AddNewUser()
         {
-            int userId = userService.CreateNewUser();
+            string userId = userService.CreateNewUser();
 
             return Ok(userId);
         }
@@ -46,10 +48,12 @@ namespace BlackBoxInc.Controllers
         /// A list of all created carts
         /// </returns>
         //GET: All carts
+        [Authorize(Roles = "Admin")]
         [HttpGet("AllUsers")]
         //[Route("AllCarts")]
         public IActionResult GetAllUsers()
         {
+
             return Ok(userService.GetAllUsers());
         }
 
@@ -64,6 +68,7 @@ namespace BlackBoxInc.Controllers
         /// Returns status code 204 if successfully deleted and 404 if the user was not found
         /// </returns>
         //DELETE:By Id
+        [Authorize(Roles = "Admin")]
         [HttpDelete]
         [Route("{userId:int}")]
         public IActionResult DeleteCart(int userId)
@@ -75,11 +80,5 @@ namespace BlackBoxInc.Controllers
             }
             return NoContent();
         }
-
-
-
-
-
-
     }
 }

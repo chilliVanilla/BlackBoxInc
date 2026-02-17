@@ -1,23 +1,23 @@
 ﻿using BlackBoxInc.Models.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace BlackBoxInc.Data
 {
-    public class ApplicationDbContext:DbContext
+    public class ApplicationDbContext:IdentityDbContext<User, IdentityRole, string>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options): base(options)
         {
             
         }
 
-        //protected override void OnModelCreating(ModelBuilder modelBuilder)
-        //{
-        //    modelBuilder.Entity<CartItem>()
-        //        .HasOne(ci => ci.User)
-        //        .WithMany(c => c.Items)
-        //        .HasForeignKey(ci => ci.UserId)
-        //        .OnDelete(DeleteBehavior.Cascade);
-        //}
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+        }
+
 
 
         public DbSet<Products> Products { get; set; }

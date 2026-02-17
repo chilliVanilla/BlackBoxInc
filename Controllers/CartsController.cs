@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using BlackBoxInc.Data;
-using BlackBoxInc.Models.Entities;
 using BlackBoxInc.Services;
 using BlackBoxInc.Models.DTOs;
+using Microsoft.AspNetCore.Authorization;
 
 /// <summary>
 /// Handles all shopping cart related operations such as creating carts(users),
@@ -17,6 +15,8 @@ using BlackBoxInc.Models.DTOs;
 
 namespace BlackBoxInc.Controllers
 {
+    [ApiController]
+    [Route("api/[controller]")]
     public class CartsController : ControllerBase
     {
         //private readonly ApplicationDbContext dbContext;
@@ -37,6 +37,7 @@ namespace BlackBoxInc.Controllers
         /// <returns>
         /// Returns the product details of the product added
         /// </returns>
+        [Authorize]
         [HttpPost("addNewProductToCart")]
         public IActionResult AddItemToCart([FromBody] CartDto dto)
         {
@@ -64,9 +65,10 @@ namespace BlackBoxInc.Controllers
         /// All item  and cart details of the user
         /// </returns>
         //GET:By Id
+        [Authorize]
         [HttpGet]
         [Route("{userId:int}/cartById")]
-        public IActionResult GetCartById(int userId)
+        public IActionResult GetCartById(string userId)
         {
             var cartProducts = cartService.
                 GetCartItemsById(userId);
@@ -78,7 +80,7 @@ namespace BlackBoxInc.Controllers
 
         }
 
-        
+
 
         /// <summary>
         /// Returns the total amount of items in a user's cart
@@ -89,9 +91,10 @@ namespace BlackBoxInc.Controllers
         /// <returns>
         /// Returns a total based on the prices and quantities of each item in the cart.
         /// </returns>
+        [Authorize]
         [HttpGet]
         [Route("{id:int}/total")]
-        public IActionResult GetTotalInCart(int id)
+        public IActionResult GetTotalInCart(string id)
         {
             var total = cartService.CartTotal(id);
             return Ok(total);
@@ -105,6 +108,7 @@ namespace BlackBoxInc.Controllers
         /// Accepts the user ID, product ID and number of products to be deleted or removed
         /// </param>
         /// <returns></returns>
+        [Authorize]
         [HttpDelete("DeleteCartItem")]
         public IActionResult DeleteItemCart([FromBody]CartDto dto)
         {

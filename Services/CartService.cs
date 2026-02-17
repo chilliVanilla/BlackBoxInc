@@ -20,12 +20,12 @@ namespace BlackBoxInc.Services
 
         
 
-        public List<CartItemResponseDto> GetCartItemsById(int id)
+        public List<CartItemResponseDto> GetCartItemsById(string id)
         {
             var cart = dbContext.Users
                 .Include(c => c.Items)
                 .ThenInclude(i => i.Product)
-                .FirstOrDefault(r => r.UserId == id);
+                .FirstOrDefault(r => r.Id == id);
 
             if (cart is null)
             {
@@ -44,7 +44,7 @@ namespace BlackBoxInc.Services
 
         }
 
-        public decimal CartTotal(int id)
+        public decimal CartTotal(string id)
         {
             var total = dbContext.CartItems
                 .Where(ci => ci.UserId == id)
@@ -63,7 +63,7 @@ namespace BlackBoxInc.Services
 
             var selectUser = dbContext.Users
                 .Include(c => c.Items)
-                .FirstOrDefault(ca => ca.UserId == dto.UserId);
+                .FirstOrDefault(ca => ca.Id == dto.UserId);
             //Get user details id, items list
 
             if (selectUser is null)
@@ -83,7 +83,7 @@ namespace BlackBoxInc.Services
             stock = stock - dto.Quantity;
             var convert = new CartItem
             {
-                //UserId = dto.UserId,
+                UserId = dto.UserId,
                 ProductId = dto.ProductId,
                 Quantity = dto.Quantity
             };
@@ -102,7 +102,7 @@ namespace BlackBoxInc.Services
 
             var selectCart = dbContext.Users
                 .Include(c => c.Items)
-                .FirstOrDefault(ca => ca.UserId == dto.UserId);
+                .FirstOrDefault(ca => ca.Id == dto.UserId);
 
             var item = selectCart
                 .Items
