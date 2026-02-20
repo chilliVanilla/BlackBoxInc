@@ -6,7 +6,7 @@ namespace BlackBoxInc.Services
     {
 
         public List<User> GetAllUsers();
-        public string CreateNewUser();
+        // public string CreateNewUser();
         public bool DeleteUser(int id);
     }
 }

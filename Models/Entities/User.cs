@@ -8,6 +8,8 @@ namespace BlackBoxInc.Models.Entities
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
         public ICollection<CartItem> Items { get; set; } = new List<CartItem>();
+        public string? RefreshToken { get; set; }
+        public DateTime RefreshTokenExpiry { get; set; }
     }
 }
 

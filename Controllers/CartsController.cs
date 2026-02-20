@@ -3,28 +3,29 @@ using BlackBoxInc.Services;
 using BlackBoxInc.Models.DTOs;
 using Microsoft.AspNetCore.Authorization;
 
-/// <summary>
-/// Handles all shopping cart related operations such as creating carts(users),
-/// adding products to cart, retrieving carts for both individual users and all user contents, 
-/// clearing carts, and getting the total price of items in a cart.
-/// </summary>
-/// <remarks>
-/// This controller exposes endpoints for managing users and their shopping carts.
-/// All cart operations are performed through this controller.
-/// </remarks>
 
 namespace BlackBoxInc.Controllers
 {
+    /// <summary>
+    /// Handles all shopping cart related operations such as creating carts(users),
+    /// adding products to cart, retrieving carts for both individual users and all user contents, 
+    /// clearing carts, and getting the total price of items in a cart.
+    /// </summary>
+    /// <remarks>
+    /// This controller exposes endpoints for managing users and their shopping carts.
+    /// All cart operations are performed through this controller.
+    /// </remarks>
+
     [ApiController]
     [Route("api/[controller]")]
     public class CartsController : ControllerBase
     {
         //private readonly ApplicationDbContext dbContext;
-        private readonly ICartService cartService;
+        private readonly ICartService _cartService;
 
         public CartsController(ICartService cartService)
         {
-            this.cartService = cartService;
+            this._cartService = cartService;
         }
 
 
@@ -41,7 +42,7 @@ namespace BlackBoxInc.Controllers
         [HttpPost("addNewProductToCart")]
         public IActionResult AddItemToCart([FromBody] CartDto dto)
         {
-            var cart = cartService.AddProductToUserCart(dto);
+            var cart = _cartService.AddProductToUserCart(dto);
             if (cart is null)
                 return NotFound("Cart or Product not found\nOr product already exists!!!!");
 
@@ -70,7 +71,7 @@ namespace BlackBoxInc.Controllers
         [Route("{userId:int}/cartById")]
         public IActionResult GetCartById(string userId)
         {
-            var cartProducts = cartService.
+            var cartProducts = _cartService.
                 GetCartItemsById(userId);
             if (cartProducts is null)
             {
@@ -96,7 +97,7 @@ namespace BlackBoxInc.Controllers
         [Route("{id:int}/total")]
         public IActionResult GetTotalInCart(string id)
         {
-            var total = cartService.CartTotal(id);
+            var total = _cartService.CartTotal(id);
             return Ok(total);
         }
 
@@ -112,7 +113,7 @@ namespace BlackBoxInc.Controllers
         [HttpDelete("DeleteCartItem")]
         public IActionResult DeleteItemCart([FromBody]CartDto dto)
         {
-            if(cartService.RemoveProductFromUserCart(dto) is null)
+            if(_cartService.RemoveProductFromUserCart(dto) is null)
                 return NotFound("Product or cart not found");
 
             return Ok("Product deleted");

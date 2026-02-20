@@ -33,7 +33,7 @@ builder.Services.AddAuthentication(options =>
         ValidIssuer = builder.Configuration["Jwt:Issuer"],
         ValidAudience = builder.Configuration["Jwt:Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ??
+            Encoding.UTF8.GetBytes(builder.Configuration["Authentication:JwtKey"] ??
             throw new Exception("Check your user secrets")))
     };
     options.Events = new JwtBearerEvents
@@ -171,3 +171,8 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.Run();
+
+// {
+//     "username": "jesse@admin",
+//     "password": "String_2026"
+// }

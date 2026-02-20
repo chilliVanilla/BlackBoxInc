@@ -21,24 +21,24 @@ namespace BlackBoxInc.Controllers
         }
 
 
-        /// <summary>
-        /// Creates new users
-        /// </summary>
-        /// <remarks>
-        /// This endpoint initializes an empty cart and returns the generated cart ID
-        /// </remarks>
-        /// <returns>
-        /// Returns the unique identifier of the newly created cart(user)
-        /// </returns>
+        // /// <summary>
+        // /// Creates new users
+        // /// </summary>
+        // /// <remarks>
+        // /// This endpoint initializes an empty cart and returns the generated cart ID
+        // /// </remarks>
+        // /// <returns>
+        // /// Returns the unique identifier of the newly created cart(user)
+        // /// </returns>
         // Post: Users
-        [Authorize]
-        [HttpPost("addNewUser")]
-        public IActionResult AddNewUser()
-        {
-            string userId = userService.CreateNewUser();
-
-            return Ok(userId);
-        }
+        // [Authorize]
+        // [HttpPost("addNewUser")]
+        // public IActionResult AddNewUser()
+        // {
+        //     string userId = userService.CreateNewUser();
+        //
+        //     return Ok(userId);
+        // }
 
 
         /// <summary>

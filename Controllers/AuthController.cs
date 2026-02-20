@@ -1,4 +1,4 @@
-﻿using BlackBoxInc.Migrations;
+﻿//using BlackBoxInc.Migrations;
 using BlackBoxInc.Models.DTOs;
 using BlackBoxInc.Models.Entities;
 using BlackBoxInc.Services;
@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+
 
 namespace BlackBoxInc.Controllers
 {
@@ -39,24 +40,24 @@ namespace BlackBoxInc.Controllers
                 LastName = signUpDto.LastName,
                 Email = signUpDto.Email,
                 UserName = signUpDto.Username,
+                RefreshToken =  _tokenService.GenerateRefreshToken(),
+                RefreshTokenExpiry = DateTime.Now.AddDays(1)
             };
 
             var result = await _userManager.CreateAsync(user, signUpDto.password);
 
-            if (result.Succeeded) 
-            {
-                //assign user role
-                await _userManager.AddToRoleAsync(user, "User");
+            if (!result.Succeeded) return BadRequest(result.Errors);
+            //assign user role
+            await _userManager.AddToRoleAsync(user, "User");
 
-                return Ok(new
-                {
-                    Username = user.UserName,
-                    Token = _tokenService.GenerateToken(user),
-                    Role = user
-                });
-            }
-            
-            return BadRequest(result.Errors);
+            return Ok(new
+            {
+                Username = user.UserName,
+                AccessToken = _tokenService.GenerateToken(user),
+                Role = user,
+                RefreshToken = _tokenService.GenerateRefreshToken(),
+            });
+
         }
 
 
@@ -64,14 +65,63 @@ namespace BlackBoxInc.Controllers
         public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
         {
             var user = await _userManager.FindByNameAsync(loginDto.Username);
-            
-            if (user != null && await _userManager.CheckPasswordAsync(user, loginDto.Password))
+
+            if (user == null || !await _userManager.CheckPasswordAsync(user, loginDto.Password))
+                return Unauthorized("Invalid Credentials");
+            var token = _tokenService.GenerateToken(user);
+            return Ok(new
             {
-                var token = _tokenService.GenerateToken(user);
-                return Ok(new { Token = token });
+                AccessToken = token,
+                RefreshToken = user.RefreshToken
+            });
+        }
+        
+        [HttpPost("refresh")]
+        public async Task<ActionResult<UserDto>> Refresh(TokenRequestDto tokenRequest)
+        {
+            var principal = _tokenService.GetPrincipalFromJwtAccessToken(tokenRequest.AccessToken);
+            Console.WriteLine("Principal: " + principal);
+            
+            var id = principal.FindFirstValue(ClaimTypes.NameIdentifier);
+            Console.WriteLine("ID: " + id);
+
+            var user = await _userManager.FindByIdAsync(id);
+            //Tests that should be logged, not printed to console, for better workflow
+            if (user == null)
+            {
+                Console.WriteLine("User is null");
+            }else if (user.RefreshToken != tokenRequest.RefreshToken)
+            {
+                Console.WriteLine("Invalid refresh token!!!");
+                Console.WriteLine("User.RefreshToken: " + user.RefreshToken);
+                Console.WriteLine("Token.RefreshToken: " + tokenRequest.RefreshToken);
+            }else if (user.RefreshTokenExpiry < DateTime.Now)
+            {
+                Console.WriteLine("Refresh token expired");
             }
 
-            return Unauthorized("Invalid Credentials");
+            if (user == null || user.RefreshToken != tokenRequest.RefreshToken || user.RefreshTokenExpiry <= DateTime.Now)
+            {
+                return Unauthorized("Invalid refresh token attempt");
+            }
+
+            
+
+            var newAccessToken = await _tokenService.GenerateToken(user);
+            var newRefreshToken = _tokenService.GenerateRefreshToken();
+            // Since renewing both is more secure against attackers
+
+            user.RefreshToken = newRefreshToken;
+            
+            await _userManager.UpdateAsync(user);
+
+            return new UserDto
+            {
+                Username = user.UserName,
+                AccessToken = newAccessToken, 
+                RefreshToken = newRefreshToken,
+                RefreshTokenExpiry = user.RefreshTokenExpiry
+            };
         }
 
 

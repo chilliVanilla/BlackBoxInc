@@ -13,15 +13,15 @@ namespace BlackBoxInc.Services
             this.dbContext = dbContext;
         }
 
-        public string CreateNewUser()
-        {
-            var newUser = new User();
-
-            dbContext.Users.Add(newUser);
-            dbContext.SaveChanges();
-
-            return newUser.Id;
-        }
+        // public string CreateNewUser()
+        // {
+        //     var newUser = new User();
+        //
+        //     dbContext.Users.Add(newUser);
+        //     dbContext.SaveChanges();
+        //
+        //     return newUser.Id;
+        // }
 
         public List<User> GetAllUsers()
         {
