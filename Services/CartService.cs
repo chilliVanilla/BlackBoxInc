@@ -52,7 +52,6 @@ namespace BlackBoxInc.Services
                 .Sum();
 
             return total;
-
         }
 
         public CartItem AddProductToUserCart(CartDto dto)

@@ -18,10 +18,8 @@ namespace BlackBoxInc.Data
             base.OnModelCreating(builder);
         }
 
-
-
         public DbSet<Products> Products { get; set; }
-        public DbSet<User> Users { get; set; }
+        // public DbSet<User> Users { get; set; }
         public DbSet<CartItem> CartItems { get; set; }
 
     }

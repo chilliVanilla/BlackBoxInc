@@ -8,43 +8,48 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using System.Text.Json.Serialization;
+using Hangfire;
+using Serilog;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add controllers .
-builder.Services.AddControllers();
+// builder.Services.AddControllers();
 //builder.Services.AddOpenApi();
+Console.WriteLine("Writing!!!!!!!!!!!!________--------------");
 
-
-//To initialise authentication
+//To initialize authentication
 builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
     {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = builder.Configuration["Jwt:Issuer"],
-        ValidAudience = builder.Configuration["Jwt:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(builder.Configuration["Authentication:JwtKey"] ??
-            throw new Exception("Check your user secrets")))
-    };
-    options.Events = new JwtBearerEvents
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(options =>
     {
-        OnAuthenticationFailed = context =>
+        var jwtKey = builder.Configuration["Authentication:JwtKey"];
+        Console.WriteLine($"DEBUG: JWT Key is {(string.IsNullOrEmpty(jwtKey) ? "NULL" : "FOUND")}");
+        options.TokenValidationParameters = new TokenValidationParameters
         {
-            Console.WriteLine("Auth failed: " + context.Exception.Message);
-            return Task.CompletedTask;
-        }
-    };
-});
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(builder.Configuration["Authentication:JwtKey"] ??
+                                       throw new Exception("Check your user secrets")))
+        };
+        options.Events = new JwtBearerEvents
+        {
+            OnAuthenticationFailed = context =>
+            {
+                Console.WriteLine("Auth failed: " + context.Exception.Message);
+                return Task.CompletedTask;
+            }
+        };
+    });
 
 builder.Services.AddAuthorization();
 
@@ -69,46 +74,39 @@ builder.Services.AddSwaggerGen(options =>
             new OpenApiSecurityScheme
             {
                 Reference = new Microsoft.OpenApi.Models.OpenApiReference
-{
-    Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
-    Id = "Bearer"
-}
-                //Reference = new OpenApiReference
-                //{
-                //    Type = ReferenceType.SecurityScheme,
-                //    Id = "Bearer"
-                //}
+                {
+                    Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
             },
-            new string[]{}
+            new string[] { }
         }
     });
 });
 
+//For logging - To point to the Seq dashboard
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Seq("http://localhost:5341")
+    .CreateLogger();
+
+//For logging locally - using the config in the appsettings
+builder.Host.UseSerilog((context, services, configuration) =>
+    configuration.ReadFrom.Configuration(context.Configuration)
+);
 
 
 //To properly set up the authentication with passwrod constraints
 //To set up role based access
-//To give the AuthController the services it needs i.e setting up Identity
+//To give the AuthController the services it needs i.e. setting up Identity
 builder.Services.AddIdentityApiEndpoints<User>(options =>
-{
-    options.Password.RequireDigit = true;
-    options.Password.RequiredLength = 8;
-})
+    {
+        options.Password.RequireDigit = true;
+        options.Password.RequiredLength = 8;
+    })
     .AddRoles<IdentityRole>()
     .AddTokenProvider<DataProtectorTokenProvider<User>>(TokenOptions.DefaultProvider)
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
-
-
-//builder.Services.AddIdentity<User, IdentityRole>(options =>
-//{
-//    options.Password.RequireDigit = true;
-//    options.Password.RequiredLength = 8;
-//})
-//    .AddRoles<IdentityRole>()
-//    .AddTokenProvider<DataProtectorTokenProvider<User>>(TokenOptions.DefaultProvider)
-//    .AddEntityFrameworkStores<ApplicationDbContext>()
-//    .AddDefaultTokenProviders();
 
 // For services handling
 builder.Services.AddEndpointsApiExplorer();
@@ -126,11 +124,21 @@ builder.Services.AddControllers()
     .AddJsonOptions(o =>
         o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
+//Add hangfire for background tasks
+builder.Services.AddHangfire((sp, config) =>
+{
+    var connectionString = sp.GetRequiredService<IConfiguration>().GetConnectionString("MainDb");
+    config.UseSqlServerStorage(connectionString);
+});
+builder.Services.AddHangfireServer();
+
+
 //List dependencies to be injected all over
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IProductServices, ProductService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 
 //Builds the app
@@ -149,7 +157,7 @@ if (app.Environment.IsDevelopment())
 app.UseAuthentication();
 app.UseAuthorization();
 
-
+// app.UseSerilogRequestLogging();
 
 app.MapControllers();
 

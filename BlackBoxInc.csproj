@@ -4,31 +4,106 @@
 		<TargetFramework>net8.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
+		<AssemblyName>BlackBoxInc.UnitTests.Run</AssemblyName>
 		<UserSecretsId>96dbe952-038a-4400-92cb-94b2cb5240ba</UserSecretsId>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Hangfire" Version="1.8.23" />
+		<PackageReference Include="MailKit" Version="4.15.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.0" />
 		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.0">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.3.0" />
 		<PackageReference Include="Microsoft.OpenApi" Version="1.6.23" />
 		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.0" />
+		<PackageReference Include="Serilog.AspNetCore" Version="10.0.0" />
+		<PackageReference Include="Serilog.Sinks.Console" Version="6.1.1" />
+		<PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
+		<PackageReference Include="Serilog.Sinks.Seq" Version="8.0.0" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
 		<PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="8.0.0" />
 		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="8.0.0" />
 		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="8.0.0" />
+		<PackageReference Include="xunit.v3" Version="3.2.2" />
 
 	</ItemGroup>
 
 	<ItemGroup>
 		<Folder Include="Migrations\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Update="BlackBoxInc.UnitTest\GlobalUsings.cs">
+	    <Link>BlackBoxInc.test\GlobalUsings.cs</Link>
+	  </Compile>
+	  <Compile Update="BlackBoxInc.UnitTest\CartServiceTest.cs">
+	    <Link>BlackBoxInc.test\CartServiceTest.cs</Link>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <_ContentIncludedByDefault Remove="BlackBoxInc.UnitTest\bin\Debug\net8.0\appsettings.Development.json" />
+	  <_ContentIncludedByDefault Remove="BlackBoxInc.UnitTest\bin\Debug\net8.0\appsettings.json" />
+	  <_ContentIncludedByDefault Remove="BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTests.App.deps.json" />
+	  <_ContentIncludedByDefault Remove="BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTests.App.runtimeconfig.json" />
+	  <_ContentIncludedByDefault Remove="BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTests.Run.deps.json" />
+	  <_ContentIncludedByDefault Remove="BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTests.Run.runtimeconfig.json" />
+	  <_ContentIncludedByDefault Remove="BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\appsettings.json" />
+	  <_ContentIncludedByDefault Remove="BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\appsettings.Development.json" />
+	  <_ContentIncludedByDefault Remove="BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\appsettings.json" />
+	  <_ContentIncludedByDefault Remove="BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTests.App.deps.json" />
+	  <_ContentIncludedByDefault Remove="BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTests.App.runtimeconfig.json" />
+	  <_ContentIncludedByDefault Remove="BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTests.Run.deps.json" />
+	  <_ContentIncludedByDefault Remove="BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTests.Run.runtimeconfig.json" />
+	  <_ContentIncludedByDefault Remove="BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\appsettings.json" />
+	  <_ContentIncludedByDefault Remove="BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\appsettings.Development.json" />
+	  <_ContentIncludedByDefault Remove="BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\appsettings.json" />
+	  <_ContentIncludedByDefault Remove="BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTests.App.deps.json" />
+	  <_ContentIncludedByDefault Remove="BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTests.App.runtimeconfig.json" />
+	  <_ContentIncludedByDefault Remove="BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTests.Run.deps.json" />
+	  <_ContentIncludedByDefault Remove="BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTests.Run.runtimeconfig.json" />
+	  <_ContentIncludedByDefault Remove="BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\appsettings.json" />
+	  <_ContentIncludedByDefault Remove="BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\appsettings.Development.json" />
+	  <_ContentIncludedByDefault Remove="BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\appsettings.json" />
+	  <_ContentIncludedByDefault Remove="BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTests.App.deps.json" />
+	  <_ContentIncludedByDefault Remove="BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTests.App.runtimeconfig.json" />
+	  <_ContentIncludedByDefault Remove="BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTests.Run.deps.json" />
+	  <_ContentIncludedByDefault Remove="BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTests.Run.runtimeconfig.json" />
+	  <_ContentIncludedByDefault Remove="BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\appsettings.json" />
+	  <_ContentIncludedByDefault Remove="BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\appsettings.Development.json" />
+	  <_ContentIncludedByDefault Remove="BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\appsettings.json" />
+	  <_ContentIncludedByDefault Remove="BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTests.App.deps.json" />
+	  <_ContentIncludedByDefault Remove="BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTests.App.runtimeconfig.json" />
+	  <_ContentIncludedByDefault Remove="BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTests.Run.deps.json" />
+	  <_ContentIncludedByDefault Remove="BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTests.Run.runtimeconfig.json" />
+	  <_ContentIncludedByDefault Remove="BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\obj\BlackBoxInc.UnitTest.csproj.nuget.dgspec.json" />
+	  <_ContentIncludedByDefault Remove="BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\obj\Debug\net8.0\BlackBoxInc.UnitTest.sourcelink.json" />
+	  <_ContentIncludedByDefault Remove="BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\obj\project.assets.json" />
+	  <_ContentIncludedByDefault Remove="BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\obj\project.packagespec.json" />
+	  <_ContentIncludedByDefault Remove="BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\obj\BlackBoxInc.UnitTest.csproj.nuget.dgspec.json" />
+	  <_ContentIncludedByDefault Remove="BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\obj\Debug\net8.0\BlackBoxInc.UnitTest.sourcelink.json" />
+	  <_ContentIncludedByDefault Remove="BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\obj\project.assets.json" />
+	  <_ContentIncludedByDefault Remove="BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\obj\project.packagespec.json" />
+	  <_ContentIncludedByDefault Remove="BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\obj\BlackBoxInc.UnitTest.csproj.nuget.dgspec.json" />
+	  <_ContentIncludedByDefault Remove="BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\obj\Debug\net8.0\BlackBoxInc.UnitTest.sourcelink.json" />
+	  <_ContentIncludedByDefault Remove="BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\obj\project.assets.json" />
+	  <_ContentIncludedByDefault Remove="BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\obj\project.packagespec.json" />
+	  <_ContentIncludedByDefault Remove="BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\obj\BlackBoxInc.UnitTest.csproj.nuget.dgspec.json" />
+	  <_ContentIncludedByDefault Remove="BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\obj\Debug\net8.0\BlackBoxInc.UnitTest.sourcelink.json" />
+	  <_ContentIncludedByDefault Remove="BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\obj\project.assets.json" />
+	  <_ContentIncludedByDefault Remove="BlackBoxInc.UnitTest\bin\Debug\net8.0\BlackBoxInc.UnitTest\obj\project.packagespec.json" />
 	</ItemGroup>
 
 </Project>
